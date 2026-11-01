@@ -1,0 +1,25 @@
+{
+  "providers": [
+    {
+      "id": "prov_1",
+      "name": "Nexus Connects",
+      "base_url": "http://nexusconnects.org:80/play/live.php",
+      "mac": "00:1A:79:F5:10:97",
+      "extension": "m3u8",
+      "active": true
+    }
+  ],
+  "channels": [
+    {
+      "id": "ch_1",
+      "name": "Willow HD",
+      "slug": "willow-hd",
+      "stream_id": "809382",
+      "provider_id": "prov_1",
+      "logo": "https://cricket.willow.tv/_nuxt/img/willow_blue_logo.362ed8e.png",
+      "category": "Sports",
+      "language": "English",
+      "active": true
+    }
+  ]
+}

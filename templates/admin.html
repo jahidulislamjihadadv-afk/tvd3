@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IPTV Admin</title>
+<style>
+:root{--bg:#0d1117;--sur:#161b22;--bor:#30363d;--acc:#e11d48;--txt:#e6edf3;--mut:#7d8590;--grn:#3fb950;--red:#f85149;--rad:8px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);font-family:system-ui,sans-serif;font-size:14px}
+.layout{display:flex;min-height:100vh}
+.side{width:210px;background:var(--sur);border-right:1px solid var(--bor);padding:0;position:fixed;top:0;bottom:0;left:0;overflow-y:auto}
+.main{margin-left:210px;padding:28px 30px;flex:1}
+.logo{padding:18px 18px 14px;border-bottom:1px solid var(--bor);margin-bottom:8px}
+.logo .b{font-size:15px;font-weight:800;color:#f43f5e}
+.logo .s{font-size:11px;color:var(--mut)}
+.nav a{display:flex;align-items:center;gap:9px;padding:10px 18px;color:var(--mut);text-decoration:none;font-size:13px;border-left:3px solid transparent;transition:.15s}
+.nav a:hover{color:var(--txt);background:#fff2}
+.nav a.on{color:var(--txt);background:#e11d4812;border-left-color:var(--acc)}
+.pg{display:none}.pg.on{display:block}
+.ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
+.pt{font-size:19px;font-weight:700}.ps{color:var(--mut);font-size:12px;margin-top:3px}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:8px 14px;border-radius:var(--rad);border:none;font:inherit;font-size:13px;cursor:pointer;font-weight:600;transition:.15s}
+.bp{background:var(--acc);color:#fff}.bp:hover{background:#f43f5e}
+.bs{background:#21262d;color:var(--txt);border:1px solid var(--bor)}.bs:hover{background:#30363d}
+.bd{background:transparent;color:var(--red);border:1px solid var(--bor)}.bd:hover{background:#f8514922;border-color:var(--red)}
+.bsm{padding:5px 10px;font-size:12px}
+.tw{background:var(--sur);border:1px solid var(--bor);border-radius:var(--rad);overflow:hidden}
+table{width:100%;border-collapse:collapse}
+th{padding:11px 15px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--mut);background:#0d1117;border-bottom:1px solid var(--bor)}
+td{padding:11px 15px;border-bottom:1px solid #21262d;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#ffffff04}
+.badge{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;border-radius:999px;font-size:11px;font-weight:700}
+.ba{background:#1a3a2a;color:var(--grn)}.bi{background:#2d1b1b;color:var(--red)}
+.mb{position:fixed;inset:0;background:#000a;z-index:100;display:none;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
+.mb.open{display:flex}
+.md{background:var(--sur);border:1px solid var(--bor);border-radius:12px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 64px #000a}
+.mh{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--bor)}
+.mt{font-size:15px;font-weight:700}
+.mx{background:none;border:none;color:var(--mut);font-size:20px;cursor:pointer;line-height:1}
+.mx:hover{color:var(--txt)}
+.mb2{padding:18px}
+.mf{display:flex;gap:9px;justify-content:flex-end;padding:14px 18px;border-top:1px solid var(--bor)}
+.fg{margin-bottom:14px}
+.fl{display:block;font-size:11px;font-weight:700;color:var(--mut);margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}
+.fi,.fs{width:100%;padding:8px 11px;background:#0d1117;border:1px solid var(--bor);border-radius:var(--rad);color:var(--txt);font:inherit;font-size:13px}
+.fi:focus,.fs:focus{outline:none;border-color:var(--acc)}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.fh{font-size:11px;color:var(--mut);margin-top:3px}
+.tgl{width:34px;height:19px;background:var(--bor);border-radius:999px;position:relative;cursor:pointer;border:none;flex-shrink:0;transition:background .2s}
+.tgl.on{background:var(--acc)}
+.tgl::after{content:'';position:absolute;top:3px;left:3px;width:13px;height:13px;background:#fff;border-radius:50%;transition:left .2s}
+.tgl.on::after{left:18px}
+.tw2{display:flex;align-items:center;gap:9px}
+.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:24px}
+.sc{background:var(--sur);border:1px solid var(--bor);border-radius:var(--rad);padding:18px}
+.sv{font-size:26px;font-weight:800}.sl{font-size:12px;color:var(--mut);margin-top:3px}
+.sb{position:relative;margin-bottom:14px}
+.sb input{width:100%;padding:8px 11px 8px 34px;background:var(--sur);border:1px solid var(--bor);border-radius:var(--rad);color:var(--txt);font:inherit;font-size:13px}
+.sb input:focus{outline:none;border-color:var(--acc)}
+.si{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--mut);pointer-events:none}
+.tc{position:fixed;top:18px;right:18px;z-index:200;display:flex;flex-direction:column;gap:7px}
+.toast{padding:11px 15px;border-radius:var(--rad);font-size:13px;font-weight:600;animation:si .2s}
+.tok{background:#1a3a2a;color:var(--grn);border:1px solid #2d6a45}
+.ter{background:#2d1b1b;color:var(--red);border:1px solid #6e2e2e}
+@keyframes si{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+.uc{display:flex;align-items:center;gap:5px}
+.ut{font-family:monospace;font-size:11px;color:#a5b4fc;background:#1e2435;padding:3px 7px;border-radius:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:230px}
+.cb{background:none;border:1px solid var(--bor);color:var(--mut);border-radius:5px;padding:3px 7px;font-size:11px;cursor:pointer}
+.cb:hover{color:var(--txt)}
+.empty{text-align:center;padding:40px;color:var(--mut)}
+</style>
+</head>
+<body>
+<div class="tc" id="tc"></div>
+<div class="layout">
+<aside class="side">
+  <div class="logo"><div class="b">📡 IPTV Admin</div><div class="s">Management Panel</div></div>
+  <nav class="nav">
+    <a href="#" class="on" id="n-dash" onclick="nav('dash')">🏠 <span>Dashboard</span></a>
+    <a href="#" id="n-ch" onclick="nav('ch')">📺 <span>Channels</span></a>
+    <a href="#" id="n-prov" onclick="nav('prov')">🔌 <span>Providers</span></a>
+  </nav>
+</aside>
+<main class="main">
+
+  <!-- Dashboard -->
+  <div class="pg on" id="pg-dash">
+    <div class="ph"><div><div class="pt">Dashboard</div><div class="ps">Your IPTV overview</div></div></div>
+    <div class="sg">
+      <div class="sc"><div style="font-size:22px;margin-bottom:6px">📺</div><div class="sv" id="s-tot">—</div><div class="sl">Total Channels</div></div>
+      <div class="sc"><div style="font-size:22px;margin-bottom:6px">✅</div><div class="sv" id="s-act">—</div><div class="sl">Active</div></div>
+      <div class="sc"><div style="font-size:22px;margin-bottom:6px">🔌</div><div class="sv" id="s-prov">—</div><div class="sl">Providers</div></div>
+      <div class="sc"><div style="font-size:22px;margin-bottom:6px">❌</div><div class="sv" id="s-off">—</div><div class="sl">Inactive</div></div>
+    </div>
+    <div class="tw"><table>
+      <thead><tr><th>Channel</th><th>Stream URL</th><th>Provider</th><th>Status</th></tr></thead>
+      <tbody id="dt"></tbody>
+    </table></div>
+  </div>
+
+  <!-- Channels -->
+  <div class="pg" id="pg-ch">
+    <div class="ph">
+      <div><div class="pt">Channels</div><div class="ps">Add, edit or remove channels</div></div>
+      <button class="btn bp" onclick="openCh()">+ Add Channel</button>
+    </div>
+    <div class="sb"><span class="si">🔍</span><input type="text" placeholder="Search channels…" id="csrch" oninput="filterCh()"></div>
+    <div class="tw"><table>
+      <thead><tr><th>Name</th><th>Stream URL</th><th>Category</th><th>Provider</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody id="ct"></tbody>
+    </table></div>
+  </div>
+
+  <!-- Providers -->
+  <div class="pg" id="pg-prov">
+    <div class="ph">
+      <div><div class="pt">Providers</div><div class="ps">Manage stream providers</div></div>
+      <button class="btn bp" onclick="openProv()">+ Add Provider</button>
+    </div>
+    <div class="tw"><table>
+      <thead><tr><th>Name</th><th>Base URL</th><th>MAC</th><th>Ext</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody id="pt"></tbody>
+    </table></div>
+  </div>
+
+</main>
+</div>
+
+<!-- Channel Modal -->
+<div class="mb" id="mch">
+  <div class="md">
+    <div class="mh"><div class="mt" id="mch-title">Add Channel</div><button class="mx" onclick="close2('mch')">✕</button></div>
+    <div class="mb2">
+      <input type="hidden" id="c-id">
+      <div class="fr">
+        <div class="fg"><label class="fl">Channel Name *</label><input class="fi" id="c-name" placeholder="Willow HD" oninput="autoSlug()"></div>
+        <div class="fg"><label class="fl">Slug *</label><input class="fi" id="c-slug" placeholder="willow-hd"><div class="fh">/play/<b>slug</b>/index.m3u8</div></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label class="fl">Stream ID *</label><input class="fi" id="c-sid" placeholder="809382"></div>
+        <div class="fg"><label class="fl">Provider *</label><select class="fs" id="c-prov"></select></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label class="fl">Category</label><input class="fi" id="c-cat" placeholder="Sports"></div>
+        <div class="fg"><label class="fl">Language</label><input class="fi" id="c-lang" placeholder="English"></div>
+      </div>
+      <div class="fg"><label class="fl">Logo URL</label><input class="fi" id="c-logo" placeholder="https://…/logo.png"></div>
+      <div class="fg"><label class="fl">Status</label>
+        <div class="tw2"><button class="tgl on" id="c-atgl" onclick="tgl('c-atgl','c-av')"></button><span id="c-albl">Active</span><input type="hidden" id="c-av" value="true"></div>
+      </div>
+    </div>
+    <div class="mf"><button class="btn bs" onclick="close2('mch')">Cancel</button><button class="btn bp" onclick="saveCh()">Save</button></div>
+  </div>
+</div>
+
+<!-- Provider Modal -->
+<div class="mb" id="mprov">
+  <div class="md">
+    <div class="mh"><div class="mt" id="mprov-title">Add Provider</div><button class="mx" onclick="close2('mprov')">✕</button></div>
+    <div class="mb2">
+      <input type="hidden" id="p-id">
+      <div class="fg"><label class="fl">Provider Name *</label><input class="fi" id="p-name" placeholder="Nexus Connects"></div>
+      <div class="fg"><label class="fl">Base URL *</label><input class="fi" id="p-url" placeholder="http://provider.com:80/play/live.php"></div>
+      <div class="fr">
+        <div class="fg"><label class="fl">MAC Address</label><input class="fi" id="p-mac" placeholder="00:1A:79:F5:10:97"></div>
+        <div class="fg"><label class="fl">Extension</label><select class="fs" id="p-ext"><option value="m3u8">m3u8</option><option value="ts">ts</option></select></div>
+      </div>
+      <div class="fg"><label class="fl">Status</label>
+        <div class="tw2"><button class="tgl on" id="p-atgl" onclick="tgl('p-atgl','p-av')"></button><span id="p-albl">Active</span><input type="hidden" id="p-av" value="true"></div>
+      </div>
+    </div>
+    <div class="mf"><button class="btn bs" onclick="close2('mprov')">Cancel</button><button class="btn bp" onclick="saveProv()">Save</button></div>
+  </div>
+</div>
+
+<script>
+let CHS=[], PROVS=[];
+
+// Nav
+function nav(p){
+  document.querySelectorAll('.pg').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('.nav a').forEach(x=>x.classList.remove('on'));
+  document.getElementById('pg-'+p).classList.add('on');
+  document.getElementById('n-'+p).classList.add('on');
+  if(p==='dash') loadDash();
+  if(p==='ch') loadCh();
+  if(p==='prov') loadProv();
+  return false;
+}
+
+// Toast
+function toast(msg,type='ok'){
+  const c=document.getElementById('tc'),t=document.createElement('div');
+  t.className='toast '+(type==='ok'?'tok':'ter');t.textContent=msg;
+  c.appendChild(t);setTimeout(()=>t.remove(),3000);
+}
+
+// Modal
+function close2(id){document.getElementById(id).classList.remove('open')}
+function open2(id){document.getElementById(id).classList.add('open')}
+document.querySelectorAll('.mb').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')}));
+
+// Toggle
+function tgl(tid,iid){
+  const b=document.getElementById(tid),i=document.getElementById(iid);
+  const on=b.classList.toggle('on');i.value=String(on);
+  const lbl=document.getElementById(tid.replace('-atgl','-albl'));
+  if(lbl) lbl.textContent=on?'Active':'Inactive';
+}
+function setTgl(tid,iid,val){
+  const b=document.getElementById(tid),i=document.getElementById(iid);
+  b.classList.toggle('on',val);i.value=String(val);
+  const lbl=document.getElementById(tid.replace('-atgl','-albl'));
+  if(lbl) lbl.textContent=val?'Active':'Inactive';
+}
+
+// Slug
+function autoSlug(){
+  const s=document.getElementById('c-slug');
+  if(!s.dataset.m) s.value=document.getElementById('c-name').value.toLowerCase().trim().replace(/[^\w\s-]/g,'').replace(/[\s_]+/g,'-').replace(/-+/g,'-');
+}
+document.getElementById('c-slug').addEventListener('input',function(){this.dataset.m=this.value?'1':''});
+
+// Escape
+function e(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+
+// Copy
+function copy(path){
+  const u=location.origin+path;
+  navigator.clipboard.writeText(u).then(()=>toast('Copied ✓')).catch(()=>{
+    const el=document.createElement('textarea');el.value=u;document.body.appendChild(el);el.select();document.execCommand('copy');el.remove();toast('Copied ✓');
+  });
+}
+
+// ---- Dashboard ----
+async function loadDash(){
+  const [chs,provs]=await Promise.all([fetch('/admin/api/channels').then(r=>r.json()),fetch('/admin/api/providers').then(r=>r.json())]);
+  CHS=chs;PROVS=provs;
+  const act=chs.filter(c=>c.active);
+  document.getElementById('s-tot').textContent=chs.length;
+  document.getElementById('s-act').textContent=act.length;
+  document.getElementById('s-off').textContent=chs.length-act.length;
+  document.getElementById('s-prov').textContent=provs.length;
+  const tb=document.getElementById('dt');
+  if(!chs.length){tb.innerHTML='<tr><td colspan="4"><div class="empty">No channels yet</div></td></tr>';return}
+  tb.innerHTML=chs.map(c=>{
+    const pv=provs.find(p=>p.id===c.provider_id);
+    const url='/play/'+c.slug+'/index.m3u8';
+    return`<tr><td><b>${e(c.name)}</b></td><td><div class="uc"><span class="ut">${e(url)}</span><button class="cb" onclick="copy('${url}')">Copy</button></div></td><td>${pv?e(pv.name):'—'}</td><td><span class="badge ${c.active?'ba':'bi'}">${c.active?'● Active':'○ Off'}</span></td></tr>`;
+  }).join('');
+}
+
+// ---- Channels ----
+async function loadCh(){
+  const [chs,provs]=await Promise.all([fetch('/admin/api/channels').then(r=>r.json()),fetch('/admin/api/providers').then(r=>r.json())]);
+  CHS=chs;PROVS=provs;renderCh(chs);
+}
+function renderCh(chs){
+  const tb=document.getElementById('ct');
+  if(!chs.length){tb.innerHTML='<tr><td colspan="6"><div class="empty">No channels. Click "+ Add Channel".</div></td></tr>';return}
+  tb.innerHTML=chs.map(c=>{
+    const pv=PROVS.find(p=>p.id===c.provider_id);
+    const url='/play/'+c.slug+'/index.m3u8';
+    return`<tr>
+      <td><b>${e(c.name)}</b><br><span style="font-size:11px;color:var(--mut)">${e(c.language||'')}</span></td>
+      <td><div class="uc"><span class="ut">${e(url)}</span><button class="cb" onclick="copy('${url}')">Copy</button></div></td>
+      <td><span style="font-size:12px;color:var(--mut)">${e(c.category||'—')}</span></td>
+      <td>${pv?e(pv.name):'<span style="color:var(--red)">Missing</span>'}</td>
+      <td><span class="badge ${c.active?'ba':'bi'}">${c.active?'● Active':'○ Off'}</span></td>
+      <td><div style="display:flex;gap:5px"><button class="btn bs bsm" onclick="editCh('${c.id}')">Edit</button><button class="btn bd bsm" onclick="delCh('${c.id}','${e(c.name)}')">Delete</button></div></td>
+    </tr>`;
+  }).join('');
+}
+function filterCh(){
+  const q=document.getElementById('csrch').value.toLowerCase();
+  renderCh(CHS.filter(c=>c.name.toLowerCase().includes(q)||c.slug.toLowerCase().includes(q)||(c.category||'').toLowerCase().includes(q)));
+}
+function openCh(ch=null){
+  document.getElementById('mch-title').textContent=ch?'Edit Channel':'Add Channel';
+  document.getElementById('c-id').value=ch?ch.id:'';
+  document.getElementById('c-name').value=ch?ch.name:'';
+  document.getElementById('c-slug').value=ch?ch.slug:'';
+  document.getElementById('c-slug').dataset.m=ch?'1':'';
+  document.getElementById('c-sid').value=ch?ch.stream_id:'';
+  document.getElementById('c-cat').value=ch?(ch.category||''):'';
+  document.getElementById('c-lang').value=ch?(ch.language||''):'';
+  document.getElementById('c-logo').value=ch?(ch.logo||''):'';
+  setTgl('c-atgl','c-av',ch?ch.active:true);
+  const sel=document.getElementById('c-prov');
+  sel.innerHTML=PROVS.map(p=>`<option value="${p.id}"${ch&&ch.provider_id===p.id?' selected':''}>${e(p.name)}</option>`).join('')||'<option value="">Add a provider first</option>';
+  open2('mch');
+}
+function editCh(id){const c=CHS.find(x=>x.id===id);if(c)openCh(c)}
+async function saveCh(){
+  const id=document.getElementById('c-id').value;
+  const payload={
+    name:document.getElementById('c-name').value.trim(),
+    slug:document.getElementById('c-slug').value.trim(),
+    stream_id:document.getElementById('c-sid').value.trim(),
+    provider_id:document.getElementById('c-prov').value,
+    category:document.getElementById('c-cat').value.trim(),
+    language:document.getElementById('c-lang').value.trim(),
+    logo:document.getElementById('c-logo').value.trim(),
+    active:document.getElementById('c-av').value==='true',
+  };
+  if(!payload.name||!payload.slug||!payload.stream_id||!payload.provider_id){toast('Fill required fields','err');return}
+  const res=await fetch(id?`/admin/api/channels/${id}`:'/admin/api/channels',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  if(res.ok){toast(id?'Channel updated ✓':'Channel added ✓');close2('mch');loadCh();loadDash();}
+  else{const err=await res.json();toast(err.error||'Error','err')}
+}
+async function delCh(id,name){
+  if(!confirm(`Delete "${name}"?`))return;
+  const res=await fetch(`/admin/api/channels/${id}`,{method:'DELETE'});
+  if(res.ok){toast('Deleted');loadCh();loadDash();}else toast('Error','err');
+}
+
+// ---- Providers ----
+async function loadProv(){
+  const provs=await fetch('/admin/api/providers').then(r=>r.json());
+  PROVS=provs;
+  const tb=document.getElementById('pt');
+  if(!provs.length){tb.innerHTML='<tr><td colspan="6"><div class="empty">No providers. Click "+ Add Provider".</div></td></tr>';return}
+  tb.innerHTML=provs.map(p=>`<tr>
+    <td><b>${e(p.name)}</b></td>
+    <td><span style="font-family:monospace;font-size:12px;color:var(--mut)">${e(p.base_url)}</span></td>
+    <td><span style="font-family:monospace;font-size:12px">${e(p.mac||'—')}</span></td>
+    <td>${e(p.extension||'m3u8')}</td>
+    <td><span class="badge ${p.active?'ba':'bi'}">${p.active?'● Active':'○ Off'}</span></td>
+    <td><div style="display:flex;gap:5px"><button class="btn bs bsm" onclick="editProv('${p.id}')">Edit</button><button class="btn bd bsm" onclick="delProv('${p.id}','${e(p.name)}')">Delete</button></div></td>
+  </tr>`).join('');
+}
+function openProv(p=null){
+  document.getElementById('mprov-title').textContent=p?'Edit Provider':'Add Provider';
+  document.getElementById('p-id').value=p?p.id:'';
+  document.getElementById('p-name').value=p?p.name:'';
+  document.getElementById('p-url').value=p?p.base_url:'';
+  document.getElementById('p-mac').value=p?(p.mac||''):'';
+  document.getElementById('p-ext').value=p?(p.extension||'m3u8'):'m3u8';
+  setTgl('p-atgl','p-av',p?p.active:true);
+  open2('mprov');
+}
+function editProv(id){const p=PROVS.find(x=>x.id===id);if(p)openProv(p)}
+async function saveProv(){
+  const id=document.getElementById('p-id').value;
+  const payload={
+    name:document.getElementById('p-name').value.trim(),
+    base_url:document.getElementById('p-url').value.trim(),
+    mac:document.getElementById('p-mac').value.trim(),
+    extension:document.getElementById('p-ext').value,
+    active:document.getElementById('p-av').value==='true',
+  };
+  if(!payload.name||!payload.base_url){toast('Name and URL required','err');return}
+  const res=await fetch(id?`/admin/api/providers/${id}`:'/admin/api/providers',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  if(res.ok){toast(id?'Provider updated ✓':'Provider added ✓');close2('mprov');loadProv();}
+  else{const err=await res.json();toast(err.error||'Error','err')}
+}
+async function delProv(id,name){
+  if(!confirm(`Delete provider "${name}"? Channels using it will break.`))return;
+  const res=await fetch(`/admin/api/providers/${id}`,{method:'DELETE'});
+  if(res.ok){toast('Deleted');loadProv();}else toast('Error','err');
+}
+
+loadDash();
+</script>
+</body>
+</html>
